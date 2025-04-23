@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Sharing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+        }
+        #statusMessage {
+            margin-top: 10px;
+            color: #666;
+            line-height: 1.5;
+        }
+        .whatsapp-link {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .whatsapp-link:hover {
+            background-color: #128C7E;
+        }
+        small {
+            color: #888;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Share Your Location</h1>
+    <p id="testMessage">If you see this message in red, JavaScript is working!</p>
+    <form id="shareForm">
+        <div class="form-group">
+            <label for="phoneNumber">Enter Phone Number:</label>
+            <input type="text" id="phoneNumber" placeholder="10-digit phone number" maxlength="10" required>
+        </div>
+        <button type="submit" id="submitButton">Share via WhatsApp</button>
+    </form>
+    <div id="statusMessage"></div>
+    
+    <!-- Test if script loads -->
+    <script>
+        console.log('Inline script running');
+        window.addEventListener('load', () => {
+            console.log('Window loaded');
+            document.getElementById('testMessage').style.color = 'red';
+        });
+    </script>
+    
+    <!-- Main script -->
+    <script src="/script.js"></script>
+</body>
+</html> 
