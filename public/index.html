@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Location Sharing</title>
+    <title>Location Tracker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,28 +51,25 @@
             color: #888;
             font-size: 0.8em;
         }
+        .description {
+            margin-bottom: 20px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
-    <h1>Share Your Location</h1>
-    <p id="testMessage">If you see this message in red, JavaScript is working!</p>
+    <h1>Location Tracker</h1>
+    <div class="description">
+        <p>Enter a phone number to send a tracking link. When the recipient clicks the link, they can share their location with you.</p>
+    </div>
     <form id="shareForm">
         <div class="form-group">
             <label for="phoneNumber">Enter Phone Number:</label>
             <input type="text" id="phoneNumber" placeholder="10-digit phone number" maxlength="10" required>
         </div>
-        <button type="submit" id="submitButton">Share via WhatsApp</button>
+        <button type="submit" id="submitButton">Send Tracking Link</button>
     </form>
     <div id="statusMessage"></div>
-    
-    <!-- Test if script loads -->
-    <script>
-        console.log('Inline script running');
-        window.addEventListener('load', () => {
-            console.log('Window loaded');
-            document.getElementById('testMessage').style.color = 'red';
-        });
-    </script>
     
     <!-- Main script -->
     <script src="/script.js"></script>

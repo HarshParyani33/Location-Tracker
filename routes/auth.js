@@ -47,12 +47,12 @@ router.post('/send-link', async (req, res) => {
             : process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
         console.log('Using base URL:', baseUrl);
 
-        // Generate location sharing link
-        const shareLink = `${baseUrl}/share-location/${user.trackingId}`;
+        // Generate location sharing link for the receiver
+        const shareLink = `${baseUrl}/track-location/${user.trackingId}`;
         console.log('Generated share link:', shareLink);
         
         // Format the message
-        const message = `Click here to share your location: ${shareLink}`;
+        const message = `Click here to share your location with me: ${shareLink}`;
         console.log('Message to be sent:', message);
 
         // Generate WhatsApp Web link
@@ -121,8 +121,8 @@ router.post('/location/:trackingId', async (req, res) => {
     }
 });
 
-// Get shared location page
-router.get('/share-location/:trackingId', async (req, res) => {
+// Get tracking page
+router.get('/track-location/:trackingId', async (req, res) => {
     try {
         const { trackingId } = req.params;
         const user = await User.findOne({ trackingId });
@@ -157,16 +157,25 @@ router.get('/share-location/:trackingId', async (req, res) => {
                         background: #f5f5f5;
                         border-radius: 5px;
                     }
+                    .status {
+                        margin-top: 20px;
+                        padding: 10px;
+                        background: #e8f5e9;
+                        border-radius: 5px;
+                        display: none;
+                    }
                 </style>
             </head>
             <body>
                 <h1>Share Your Location</h1>
+                <p>Your location will be shared with the person who sent you this link.</p>
                 <div id="map"></div>
                 <div class="location-info">
                     <p>Latitude: <span id="latitude">-</span></p>
                     <p>Longitude: <span id="longitude">-</span></p>
                     <p>Accuracy: <span id="accuracy">-</span> meters</p>
                 </div>
+                <div class="status" id="status">Location shared successfully!</div>
                 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
                 <script>
                     const trackingId = '${trackingId}';
@@ -229,6 +238,9 @@ router.get('/share-location/:trackingId', async (req, res) => {
                             if (!response.ok) {
                                 throw new Error('Failed to update location');
                             }
+                            
+                            // Show success message
+                            document.getElementById('status').style.display = 'block';
                         } catch (error) {
                             console.error('Error sending location:', error);
                         }
@@ -249,7 +261,7 @@ router.get('/share-location/:trackingId', async (req, res) => {
             </html>
         `);
     } catch (error) {
-        console.error('Error serving share location page:', error);
+        console.error('Error serving tracking page:', error);
         res.status(500).send('Internal server error');
     }
 });

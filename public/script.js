@@ -73,7 +73,7 @@ function init() {
                 statusMessage.innerHTML = `
                     Link generated! <br>
                     <a href="${data.whatsappLink}" target="_blank" class="whatsapp-link">
-                        Click here to open WhatsApp
+                        Click here to send the tracking link via WhatsApp
                     </a>
                 `;
                 
@@ -93,10 +93,7 @@ function init() {
 }
 
 // Initialize when the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded');
-    init();
-});
+document.addEventListener('DOMContentLoaded', init);
 
 // Initialize map
 function initializeMap() {
