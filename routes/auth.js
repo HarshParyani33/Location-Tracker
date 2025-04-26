@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const crypto = require('crypto');
+const path = require('path');
 
 // Generate tracking ID
 function generateTrackingId() {
@@ -131,135 +132,8 @@ router.get('/track-location/:trackingId', async (req, res) => {
             return res.status(404).send('Invalid tracking ID');
         }
 
-        // Send the HTML page for location sharing
-        res.send(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Share Your Location</title>
-                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        margin: 0;
-                        padding: 20px;
-                    }
-                    #map {
-                        height: 400px;
-                        width: 100%;
-                        margin-top: 20px;
-                    }
-                    .location-info {
-                        margin-top: 20px;
-                        padding: 10px;
-                        background: #f5f5f5;
-                        border-radius: 5px;
-                    }
-                    .status {
-                        margin-top: 20px;
-                        padding: 10px;
-                        background: #e8f5e9;
-                        border-radius: 5px;
-                        display: none;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>Share Your Location</h1>
-                <p>Your location will be shared with the person who sent you this link.</p>
-                <div id="map"></div>
-                <div class="location-info">
-                    <p>Latitude: <span id="latitude">-</span></p>
-                    <p>Longitude: <span id="longitude">-</span></p>
-                    <p>Accuracy: <span id="accuracy">-</span> meters</p>
-                </div>
-                <div class="status" id="status">Location shared successfully!</div>
-                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-                <script>
-                    const trackingId = '${trackingId}';
-                    let map = null;
-                    let marker = null;
-                    let watchId = null;
-
-                    function initializeMap() {
-                        map = L.map('map').setView([0, 0], 13);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '© OpenStreetMap contributors'
-                        }).addTo(map);
-                    }
-
-                    function startLocationTracking() {
-                        if (navigator.geolocation) {
-                            watchId = navigator.geolocation.watchPosition(
-                                (position) => {
-                                    const { latitude, longitude, accuracy } = position.coords;
-                                    updateLocationDisplay(latitude, longitude, accuracy);
-                                    updateMap(latitude, longitude);
-                                    sendLocationToServer(latitude, longitude);
-                                },
-                                handleLocationError,
-                                {
-                                    enableHighAccuracy: true,
-                                    timeout: 5000,
-                                    maximumAge: 0
-                                }
-                            );
-                        } else {
-                            handleLocationError(new Error('Geolocation is not supported by your browser'));
-                        }
-                    }
-
-                    function updateLocationDisplay(latitude, longitude, accuracy) {
-                        document.getElementById('latitude').textContent = latitude.toFixed(6);
-                        document.getElementById('longitude').textContent = longitude.toFixed(6);
-                        document.getElementById('accuracy').textContent = accuracy.toFixed(2);
-                    }
-
-                    function updateMap(latitude, longitude) {
-                        if (marker) {
-                            map.removeLayer(marker);
-                        }
-                        marker = L.marker([latitude, longitude]).addTo(map);
-                        map.setView([latitude, longitude], 13);
-                    }
-
-                    async function sendLocationToServer(latitude, longitude) {
-                        try {
-                            const response = await fetch('/api/auth/location/' + trackingId, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ latitude, longitude })
-                            });
-                            
-                            if (!response.ok) {
-                                throw new Error('Failed to update location');
-                            }
-                            
-                            // Show success message
-                            document.getElementById('status').style.display = 'block';
-                        } catch (error) {
-                            console.error('Error sending location:', error);
-                        }
-                    }
-
-                    function handleLocationError(error) {
-                        console.error('Error getting location:', error);
-                        document.getElementById('latitude').textContent = 'Error';
-                        document.getElementById('longitude').textContent = 'Error';
-                        document.getElementById('accuracy').textContent = 'Error';
-                    }
-
-                    // Initialize when the page loads
-                    initializeMap();
-                    startLocationTracking();
-                </script>
-            </body>
-            </html>
-        `);
+        // Send the track.html file
+        res.sendFile(path.join(__dirname, '../public/track.html'));
     } catch (error) {
         console.error('Error serving tracking page:', error);
         res.status(500).send('Internal server error');

@@ -58,11 +58,6 @@ app.use('/api/auth', authRoutes);
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve tracking page
-app.get('/track-location/:trackingId', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'track.html'));
-});
-
 // Serve view location page
 app.get('/view-location/:trackingId', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'view.html'));
