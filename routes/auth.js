@@ -41,8 +41,10 @@ router.post('/send-link', async (req, res) => {
             console.log('Existing user found with trackingId:', user.trackingId);
         }
 
-        // Get the base URL from environment or use ngrok URL if available
-        const baseUrl = process.env.NGROK_URL || process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+        // Get the base URL from environment or use Vercel URL in production
+        const baseUrl = process.env.VERCEL_URL 
+            ? `https://${process.env.VERCEL_URL}` 
+            : process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
         console.log('Using base URL:', baseUrl);
 
         // Generate location sharing link
