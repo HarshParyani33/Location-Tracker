@@ -122,22 +122,4 @@ router.post('/location/:trackingId', async (req, res) => {
     }
 });
 
-// Get tracking page
-router.get('/track-location/:trackingId', async (req, res) => {
-    try {
-        const { trackingId } = req.params;
-        const user = await User.findOne({ trackingId });
-        
-        if (!user) {
-            return res.status(404).send('Invalid tracking ID');
-        }
-
-        // Send the track.html file
-        res.sendFile(path.join(__dirname, '../public/track.html'));
-    } catch (error) {
-        console.error('Error serving tracking page:', error);
-        res.status(500).send('Internal server error');
-    }
-});
-
 module.exports = router; 

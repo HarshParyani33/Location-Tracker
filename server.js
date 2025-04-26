@@ -58,6 +58,24 @@ app.use('/api/auth', authRoutes);
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve tracking page
+app.get('/track-location/:trackingId', async (req, res) => {
+    try {
+        const { trackingId } = req.params;
+        const User = require('./models/User');
+        const user = await User.findOne({ trackingId });
+        
+        if (!user) {
+            return res.status(404).send('Invalid tracking ID');
+        }
+
+        res.sendFile(path.join(__dirname, 'public', 'track.html'));
+    } catch (error) {
+        console.error('Error serving tracking page:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
 // Serve view location page
 app.get('/view-location/:trackingId', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'view.html'));
