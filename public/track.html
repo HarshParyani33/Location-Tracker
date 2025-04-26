@@ -19,12 +19,14 @@
             margin-top: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
         }
         .location-info {
             margin-top: 20px;
             padding: 15px;
             background: #f5f5f5;
             border-radius: 8px;
+            display: none;
         }
         .status {
             margin-top: 20px;
@@ -32,6 +34,32 @@
             background: #e8f5e9;
             border-radius: 8px;
             display: none;
+        }
+        .confirmation-dialog {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .accept-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .decline-btn {
+            background-color: #f44336;
+            color: white;
         }
         h1 {
             color: #333;
@@ -43,8 +71,14 @@
     </style>
 </head>
 <body>
-    <h1>Share Your Location</h1>
-    <p>Your location will be shared with the person who sent you this link. The location will update automatically as you move.</p>
+    <h1>Location Sharing Request</h1>
+    <div class="confirmation-dialog">
+        <p>Someone has requested to track your location. Would you like to share your location with them?</p>
+        <div class="button-group">
+            <button class="accept-btn" onclick="startSharing()">Yes, Share My Location</button>
+            <button class="decline-btn" onclick="declineSharing()">No, Don't Share</button>
+        </div>
+    </div>
     
     <div id="map"></div>
     
@@ -62,12 +96,26 @@
         let map = null;
         let marker = null;
         let watchId = null;
+        let isSharing = false;
 
         function initializeMap() {
             map = L.map('map').setView([0, 0], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
+        }
+
+        function startSharing() {
+            document.querySelector('.confirmation-dialog').style.display = 'none';
+            document.getElementById('map').style.display = 'block';
+            document.querySelector('.location-info').style.display = 'block';
+            isSharing = true;
+            startLocationTracking();
+        }
+
+        function declineSharing() {
+            document.querySelector('.confirmation-dialog').style.display = 'none';
+            document.body.innerHTML = '<h1>Location Sharing Declined</h1><p>You have declined to share your location.</p>';
         }
 
         function startLocationTracking() {
@@ -106,6 +154,8 @@
         }
 
         async function sendLocationToServer(latitude, longitude) {
+            if (!isSharing) return;
+            
             try {
                 const response = await fetch(`/api/auth/location/${trackingId}`, {
                     method: 'POST',
@@ -119,7 +169,6 @@
                     throw new Error('Failed to update location');
                 }
                 
-                // Show success message
                 document.getElementById('status').style.display = 'block';
             } catch (error) {
                 console.error('Error sending location:', error);
@@ -135,7 +184,6 @@
 
         // Initialize when the page loads
         initializeMap();
-        startLocationTracking();
     </script>
 </body>
 </html> 
