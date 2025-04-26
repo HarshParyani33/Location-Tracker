@@ -61,6 +61,12 @@
             background-color: #f44336;
             color: white;
         }
+        .stop-btn {
+            background-color: #f44336;
+            color: white;
+            margin-top: 20px;
+            display: none;
+        }
         h1 {
             color: #333;
         }
@@ -86,6 +92,7 @@
         <p>Latitude: <span id="latitude">-</span></p>
         <p>Longitude: <span id="longitude">-</span></p>
         <p>Accuracy: <span id="accuracy">-</span> meters</p>
+        <button class="stop-btn" onclick="stopSharing()">Stop Sharing Location</button>
     </div>
     
     <div class="status" id="status">Location shared successfully!</div>
@@ -109,8 +116,20 @@
             document.querySelector('.confirmation-dialog').style.display = 'none';
             document.getElementById('map').style.display = 'block';
             document.querySelector('.location-info').style.display = 'block';
+            document.querySelector('.stop-btn').style.display = 'block';
             isSharing = true;
             startLocationTracking();
+        }
+
+        function stopSharing() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            isSharing = false;
+            document.querySelector('.stop-btn').style.display = 'none';
+            document.getElementById('status').textContent = 'Location sharing stopped';
+            document.getElementById('status').style.display = 'block';
         }
 
         function declineSharing() {
@@ -169,6 +188,7 @@
                     throw new Error('Failed to update location');
                 }
                 
+                document.getElementById('status').textContent = 'Location shared successfully!';
                 document.getElementById('status').style.display = 'block';
             } catch (error) {
                 console.error('Error sending location:', error);
