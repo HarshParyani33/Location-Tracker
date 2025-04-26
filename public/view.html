@@ -131,7 +131,19 @@
                 const data = await response.json();
                 
                 if (data.location && data.location.latitude && data.location.longitude) {
-                    const { latitude, longitude, accuracy, timestamp } = data.location;
+                    const { latitude, longitude, accuracy, timestamp, status } = data.location;
+                    
+                    // Check if sharing was stopped
+                    if (status === 'stopped') {
+                        if (isSharingActive) {
+                            isSharingActive = false;
+                            showNotification('Location sharing has been stopped by the user.');
+                        }
+                        document.getElementById('status').textContent = 'Location sharing has been stopped.';
+                        document.getElementById('status').style.backgroundColor = '#ffebee';
+                        updateLocationDisplay(null, null, null, null);
+                        return;
+                    }
                     
                     // Only update if location has changed
                     if (!lastLocation || 

@@ -130,6 +130,21 @@
             document.querySelector('.stop-btn').style.display = 'none';
             document.getElementById('status').textContent = 'Location sharing stopped';
             document.getElementById('status').style.display = 'block';
+            
+            // Send a final update to clear the location
+            fetch(`/api/auth/location/${trackingId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    latitude: null,
+                    longitude: null,
+                    accuracy: null,
+                    timestamp: new Date().toISOString(),
+                    status: 'stopped'
+                })
+            }).catch(error => console.error('Error stopping location sharing:', error));
         }
 
         function declineSharing() {
@@ -181,7 +196,12 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ latitude, longitude })
+                    body: JSON.stringify({ 
+                        latitude, 
+                        longitude,
+                        accuracy: document.getElementById('accuracy').textContent,
+                        timestamp: new Date().toISOString()
+                    })
                 });
                 
                 if (!response.ok) {
