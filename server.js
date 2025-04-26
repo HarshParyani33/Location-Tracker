@@ -11,7 +11,6 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(cors());
-app.use(express.static('public'));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -39,10 +38,8 @@ const connectWithRetry = async () => {
     }
 };
 
-// Only connect to MongoDB if not in a serverless environment
-if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
-    connectWithRetry();
-}
+// Connect to MongoDB
+connectWithRetry();
 
 // Handle MongoDB connection errors
 mongoose.connection.on('error', (err) => {
@@ -58,9 +55,14 @@ mongoose.connection.on('disconnected', () => {
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 
-// Serve static files
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve index.html for all routes except /api
+app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    }
 });
 
 // Error handling middleware
