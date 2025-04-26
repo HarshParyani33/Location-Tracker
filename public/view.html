@@ -71,12 +71,11 @@
     <div class="location-info">
         <p>Latitude: <span id="latitude">-</span></p>
         <p>Longitude: <span id="longitude">-</span></p>
-        <p>Accuracy: <span id="accuracy">-</span> meters</p>
         <p class="last-updated">Last updated: <span id="lastUpdated">-</span></p>
     </div>
     
     <div class="status" id="status">Waiting for location updates...</div>
-    <div class="notification" id="notification">Location sharing has been stopped by the user.</div>
+    <div class="notification" id="notification">Location Sharing is stopped</div>
     
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
@@ -102,11 +101,9 @@
             }).addTo(map);
         }
 
-        function updateLocationDisplay(latitude, longitude, accuracy, timestamp) {
-            // Safely handle undefined values
+        function updateLocationDisplay(latitude, longitude, timestamp) {
             document.getElementById('latitude').textContent = latitude ? latitude.toFixed(6) : '-';
             document.getElementById('longitude').textContent = longitude ? longitude.toFixed(6) : '-';
-            document.getElementById('accuracy').textContent = accuracy ? accuracy.toFixed(2) : '-';
             document.getElementById('lastUpdated').textContent = timestamp ? new Date(timestamp).toLocaleString() : '-';
         }
 
@@ -131,17 +128,17 @@
                 const data = await response.json();
                 
                 if (data.location && data.location.latitude && data.location.longitude) {
-                    const { latitude, longitude, accuracy, timestamp, status } = data.location;
+                    const { latitude, longitude, timestamp, status } = data.location;
                     
                     // Check if sharing was stopped
                     if (status === 'stopped') {
                         if (isSharingActive) {
                             isSharingActive = false;
-                            showNotification('Location sharing has been stopped by the user.');
+                            showNotification('Location Sharing is stopped');
                         }
                         document.getElementById('status').textContent = 'Location sharing has been stopped.';
                         document.getElementById('status').style.backgroundColor = '#ffebee';
-                        updateLocationDisplay(null, null, null, null);
+                        updateLocationDisplay(null, null, null);
                         return;
                     }
                     
@@ -150,7 +147,7 @@
                         lastLocation.latitude !== latitude || 
                         lastLocation.longitude !== longitude) {
                         
-                        updateLocationDisplay(latitude, longitude, accuracy, timestamp);
+                        updateLocationDisplay(latitude, longitude, timestamp);
                         updateMap(latitude, longitude);
                         lastLocation = { latitude, longitude };
                         
@@ -160,17 +157,17 @@
                 } else {
                     if (isSharingActive) {
                         isSharingActive = false;
-                        showNotification('Location sharing has been stopped by the user.');
+                        showNotification('Location Sharing is stopped');
                     }
                     document.getElementById('status').textContent = 'Location sharing has been stopped.';
                     document.getElementById('status').style.backgroundColor = '#ffebee';
-                    updateLocationDisplay(null, null, null, null);
+                    updateLocationDisplay(null, null, null);
                 }
             } catch (error) {
                 console.error('Error fetching location:', error);
                 document.getElementById('status').textContent = 'Error fetching location. Retrying...';
                 document.getElementById('status').style.backgroundColor = '#ffebee';
-                updateLocationDisplay(null, null, null, null);
+                updateLocationDisplay(null, null, null);
             }
         }
 

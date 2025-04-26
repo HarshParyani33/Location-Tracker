@@ -140,11 +140,17 @@
                 body: JSON.stringify({ 
                     latitude: null,
                     longitude: null,
-                    accuracy: null,
                     timestamp: new Date().toISOString(),
                     status: 'stopped'
                 })
-            }).catch(error => console.error('Error stopping location sharing:', error));
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update status');
+                }
+                console.log('Location sharing stopped successfully');
+            }).catch(error => {
+                console.error('Error stopping location sharing:', error);
+            });
         }
 
         function declineSharing() {
