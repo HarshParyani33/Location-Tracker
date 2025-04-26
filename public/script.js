@@ -77,6 +77,16 @@ function init() {
                     </a>
                 `;
                 
+                // Show view link to sender
+                const viewLink = `${window.location.origin}/view-location/${data.trackingId}`;
+                const linksContainer = document.getElementById('linksContainer');
+                linksContainer.innerHTML = `
+                    <p>You can view the location here:</p>
+                    <a href="${viewLink}" target="_blank" class="view-link">
+                        View Location
+                    </a>
+                `;
+                
                 // Try to open WhatsApp
                 window.open(data.whatsappLink, '_blank');
             } else {

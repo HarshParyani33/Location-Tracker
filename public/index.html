@@ -47,6 +47,18 @@
         .whatsapp-link:hover {
             background-color: #128C7E;
         }
+        .view-link {
+            display: inline-block;
+            background-color: #4285f4;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .view-link:hover {
+            background-color: #3367d6;
+        }
         small {
             color: #888;
             font-size: 0.8em;
@@ -54,6 +66,9 @@
         .description {
             margin-bottom: 20px;
             color: #666;
+        }
+        .links-container {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -70,6 +85,7 @@
         <button type="submit" id="submitButton">Send Tracking Link</button>
     </form>
     <div id="statusMessage"></div>
+    <div class="links-container" id="linksContainer"></div>
     
     <!-- Main script -->
     <script src="/script.js"></script>

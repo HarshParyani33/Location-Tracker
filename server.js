@@ -58,11 +58,19 @@ app.use('/api/auth', authRoutes);
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve index.html for all routes except /api
+// Serve tracking page
+app.get('/track-location/:trackingId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'track.html'));
+});
+
+// Serve view location page
+app.get('/view-location/:trackingId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'view.html'));
+});
+
+// Serve index.html for all other routes
 app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-        res.sendFile(path.join(__dirname, 'public', 'index.html'));
-    }
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Error handling middleware
